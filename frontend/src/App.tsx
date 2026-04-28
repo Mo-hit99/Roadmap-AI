@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 
-const HomePage = lazy(() => import('./pages/HomePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const PageShimmer: React.FC = () => (
   <div className="page-shimmer">
@@ -50,11 +50,12 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               } 
             >
-              <Route index element={<HomePage />} />
+              <Route index element={<RoadmapPage />} />
               <Route path="roadmap" element={<RoadmapPage />} />
               <Route path="history" element={<HistoryPage />} />
-              <Route path="*" element={<HomePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </Router>
