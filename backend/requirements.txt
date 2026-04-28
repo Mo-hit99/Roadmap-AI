@@ -7,4 +7,3 @@ openai==2.33.0
 pandas==2.2.2
 joblib==1.4.2
 flask-cors==6.0.2
-flask-session==0.8.0

@@ -41,7 +41,6 @@ It combines:
 ### Backend
 - Flask
 - Flask-CORS
-- Flask-Session
 - SQLAlchemy
 - PostgreSQL via `psycopg2-binary`
 
@@ -106,6 +105,7 @@ pip install -r requirements.txt
 ```env
 DATABASE_URL=postgresql://username:password@localhost:5432/ai_roadmap
 SECRET_KEY=your_secure_secret_key
+CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 
 OLLAMA_BASE_URL=http://localhost:11434/v1
 OLLAMA_API_KEY=ollama
@@ -144,7 +144,13 @@ cd frontend
 npm install
 ```
 
-3. Start the development server:
+3. Create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
@@ -158,13 +164,47 @@ http://localhost:5173
 
 ## Environment Notes
 
-- The frontend talks to the backend at `http://localhost:5000/api`.
+- The frontend reads the backend base URL from `VITE_API_BASE_URL`.
 - CORS is configured for common local Vite origins:
   - `http://localhost:5173`
   - `http://localhost:5174`
   - `http://127.0.0.1:5173`
   - `http://127.0.0.1:5174`
 - Authentication uses Flask sessions with credentials included in frontend requests.
+
+## Vercel Deployment
+
+Deploy `frontend/` and `backend/` as two separate Vercel projects.
+
+### Backend project
+
+Set the Vercel root directory to `backend` and add these environment variables:
+
+```env
+DATABASE_URL=your-production-postgres-url
+SECRET_KEY=your-long-random-secret
+CORS_ORIGINS=https://your-frontend-domain.vercel.app
+OLLAMA_BASE_URL=your-openai-compatible-base-url
+OLLAMA_API_KEY=your-api-key
+OLLAMA_MODEL=your-model-name
+```
+
+Notes:
+- `backend/vercel.json` routes all requests to the Flask app.
+- Sessions use signed cookies, which works in Vercel's serverless runtime.
+- If you later add a custom frontend domain, include it in `CORS_ORIGINS`.
+
+### Frontend project
+
+Set the Vercel root directory to `frontend` and add:
+
+```env
+VITE_API_BASE_URL=https://your-backend-domain.vercel.app/api
+```
+
+Notes:
+- `frontend/vercel.json` rewrites SPA routes to `index.html` for React Router.
+- After deploying the backend, copy its production URL into `VITE_API_BASE_URL` and redeploy the frontend.
 
 ## Main API Routes
 

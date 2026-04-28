@@ -1,7 +1,6 @@
 import os
-from flask import Flask, session
+from flask import Flask
 from flask_cors import CORS
-from flask_session import Session
 from routes.roadmap import roadmap_bp
 from routes.auth import auth_bp
 from dotenv import load_dotenv
@@ -9,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+is_production = os.getenv("VERCEL_ENV") == "production" or os.getenv("FLASK_ENV") == "production"
 
 default_cors_origins = [
     "http://localhost:5173",
@@ -25,14 +25,10 @@ cors_origins = [
 
 # Security & CORS
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-12345')
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'None' if is_production else 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = is_production
 CORS(app, supports_credentials=True, origins=cors_origins)
-
-
-# Session Configuration
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
-Session(app)
 
 # Register Blueprints
 app.register_blueprint(roadmap_bp, url_prefix='/api/roadmap')
