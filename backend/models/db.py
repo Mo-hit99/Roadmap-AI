@@ -8,9 +8,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+def _normalize_database_url(url):
+    if not url:
+        raise ValueError("DATABASE_URL is not set.")
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql://", 1)
+    return url
 
-engine = create_engine(DATABASE_URL)
+DATABASE_URL = _normalize_database_url(os.getenv("DATABASE_URL"))
+
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
