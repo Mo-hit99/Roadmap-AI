@@ -10,9 +10,22 @@ load_dotenv()
 
 app = Flask(__name__)
 
+default_cors_origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+]
+
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", ",".join(default_cors_origins)).split(",")
+    if origin.strip()
+]
+
 # Security & CORS
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-12345')
-CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"])
+CORS(app, supports_credentials=True, origins=cors_origins)
 
 
 # Session Configuration
