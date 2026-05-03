@@ -1,6 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { GitBranch, History } from 'lucide-react';
+import {
+  GitBranch,
+  History,
+  MessageSquare,
+  Briefcase,
+  FileText,
+  CalendarDays,
+  Search,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -20,7 +28,22 @@ const sections: SidebarSection[] = [
   {
     title: 'Workspace',
     items: [
-      { label: 'RoadMap', path: '/roadmap', icon: GitBranch},
+      { label: 'RoadMap', path: '/roadmap', icon: GitBranch },
+      { label: 'AI Mentor', path: '/mentor', icon: MessageSquare },
+      { label: 'Daily Planner', path: '/daily-plan', icon: CalendarDays },
+    ],
+  },
+  {
+    title: 'Career Tools',
+    items: [
+      { label: 'Job Match', path: '/job-match', icon: Briefcase },
+      { label: 'Resume Builder', path: '/resume', icon: FileText },
+      { label: 'Skill Gap', path: '/skill-gap', icon: Search },
+    ],
+  },
+  {
+    title: 'Data',
+    items: [
       { label: 'History', path: '/history', icon: History },
     ],
   },

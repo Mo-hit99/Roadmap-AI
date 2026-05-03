@@ -3,11 +3,14 @@ from flask import Flask
 from flask_cors import CORS
 from routes.roadmap import roadmap_bp
 from routes.auth import auth_bp
+from routes.mentor import mentor_bp
+from models.db import init_db
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+init_db()
 is_production = os.getenv("VERCEL_ENV") == "production" or os.getenv("FLASK_ENV") == "production"
 
 default_cors_origins = [
@@ -33,6 +36,7 @@ CORS(app, supports_credentials=True, origins=cors_origins)
 # Register Blueprints
 app.register_blueprint(roadmap_bp, url_prefix='/api/roadmap')
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(mentor_bp, url_prefix='/api/mentor')
 
 
 @app.route('/')

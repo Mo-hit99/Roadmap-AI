@@ -7,6 +7,11 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
+const MentorPage = lazy(() => import('./pages/MentorPage'));
+const JobMatchPage = lazy(() => import('./pages/JobMatchPage'));
+const ResumePage = lazy(() => import('./pages/ResumePage'));
+const DailyPlanPage = lazy(() => import('./pages/DailyPlanPage'));
+const SkillGapPage = lazy(() => import('./pages/SkillGapPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const PageShimmer: React.FC = () => (
@@ -52,6 +57,11 @@ const App: React.FC = () => {
             >
               <Route index element={<RoadmapPage />} />
               <Route path="roadmap" element={<RoadmapPage />} />
+              <Route path="mentor" element={<MentorPage />} />
+              <Route path="job-match" element={<JobMatchPage />} />
+              <Route path="resume" element={<ResumePage />} />
+              <Route path="daily-plan" element={<DailyPlanPage />} />
+              <Route path="skill-gap" element={<SkillGapPage />} />
               <Route path="history" element={<HistoryPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>

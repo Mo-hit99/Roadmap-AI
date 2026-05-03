@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from services.predictor import predict_success
+from services.predictor import predict_success_full
 from services.roadmap_generator import generate_roadmap, suggest_skills
 from models.db import SessionLocal, RoadmapHistory
 
@@ -33,8 +33,10 @@ def generate():
     skills = data['skills']
     hours = data['hours']
     deadline = data['deadline']
+    progress = data.get('progress', '')
 
-    success = predict_success(hours, skills)
+    # Use AI-powered predictor with structured output
+    success_data = predict_success_full(goal, skills, hours, deadline)
     roadmap = generate_roadmap(goal, skills, hours, deadline)
 
     # Save to database
@@ -46,18 +48,25 @@ def generate():
             skills=", ".join(skills) if isinstance(skills, list) else skills,
             hours=hours,
             deadline=deadline,
-            success_score=float(success),
-            roadmap_content=roadmap
+            success_score=float(success_data["score"]),
+            roadmap_content=roadmap,
+            progress=progress
         )
         db.add(history)
         db.commit()
     except Exception as e:
+        db.rollback()
         print(f"Error saving to DB: {e}")
     finally:
         db.close()
 
     return jsonify({
-        "success": success,
+        "success": success_data["score"],
+        "success_details": {
+            "reasoning": success_data.get("reasoning", ""),
+            "risk_factors": success_data.get("risk_factors", []),
+            "improvements": success_data.get("improvements", [])
+        },
         "roadmap": roadmap
     })
 
@@ -78,6 +87,7 @@ def get_history():
             "deadline": h.deadline,
             "success": h.success_score,
             "roadmap": h.roadmap_content,
+            "progress": h.progress or "",
             "created_at": h.created_at.isoformat()
         } for h in history])
     finally:

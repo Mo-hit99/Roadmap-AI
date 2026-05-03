@@ -1,30 +1,54 @@
-# AI Roadmap Generator
+# AI Career Mentor Platform
 
-AI Roadmap Generator is a full-stack career planning app that helps users create personalized learning roadmaps, estimate success likelihood, and save roadmap history in a secure workspace.
+A full-stack AI-powered career planning platform that helps users create personalized learning roadmaps, chat with an AI mentor, match job roles, build resumes, plan daily tasks, and analyze skill gaps.
 
 It combines:
 - a React + Vite frontend
 - a Flask API backend
 - session-based authentication
-- AI-generated roadmap and skill suggestions through an OpenAI-compatible endpoint such as Ollama
+- AI-generated insights through an OpenAI-compatible endpoint such as Ollama
 
 ## Features
 
+### Core
 - Personalized roadmap generation based on:
   - primary goal
   - current skills
   - hours available per week
   - target date
 - AI-generated skill suggestions from the primary goal
-- Success score prediction based on skill/time inputs
+- AI-powered success score prediction with reasoning, risk factors, and improvement suggestions
 - Login and signup flow with session auth
 - Saved roadmap history per user
-- Roadmap actions:
-  - export
-  - regenerate
-  - share
-  - print / save as PDF
-- Responsive UI with animated transitions and a modern dashboard layout
+
+### AI Mentor Chat
+- Context-aware career advisor chat interface
+- Quick actions: "What should I do today?", "Am I on track?"
+- Collapsible context panel for goal, skills, hours, deadline, progress
+- Typing indicator and chat bubble UI
+
+### Job Role Matcher
+- Suggests 3-5 realistic job roles based on goal and skills
+- Shows readiness percentage with visual gauge ring per role
+- Lists missing skills and improvement suggestions
+
+### ATS Resume Builder
+- Generates professional, ATS-friendly resume in markdown
+- Live preview with rendered markdown
+- Copy to clipboard, download as markdown, print/PDF
+
+### Daily Planner
+- Generates a 7-day actionable study plan
+- Each day includes learning topic, practice task, and expected outcome
+- Regenerate button for fresh plans
+
+### Skill Gap Analyzer
+- Compares user skills with industry requirements
+- Categorizes gaps into critical (must-have) and optional (nice-to-have)
+- Priority-ordered ranking with visual progress bars
+
+### Roadmap Actions
+- Export, regenerate, share, print, and save as PDF
 
 ## Tech Stack
 
@@ -57,10 +81,35 @@ It combines:
 │   ├── config.py
 │   ├── migrate.py
 │   ├── models
+│   │   └── db.py
 │   ├── routes
+│   │   ├── auth.py
+│   │   ├── mentor.py
+│   │   └── roadmap.py
 │   └── services
+│       ├── predictor.py
+│       └── roadmap_generator.py
 ├── frontend
 │   ├── src
+│   │   ├── App.tsx
+│   │   ├── components
+│   │   │   ├── auth/
+│   │   │   ├── layout/
+│   │   │   ├── roadmap/
+│   │   │   └── ui/
+│   │   ├── context/
+│   │   ├── pages
+│   │   │   ├── RoadmapPage.tsx
+│   │   │   ├── MentorPage.tsx
+│   │   │   ├── JobMatchPage.tsx
+│   │   │   ├── ResumePage.tsx
+│   │   │   ├── DailyPlanPage.tsx
+│   │   │   ├── SkillGapPage.tsx
+│   │   │   ├── HistoryPage.tsx
+│   │   │   ├── LoginPage.tsx
+│   │   │   ├── SignupPage.tsx
+│   │   │   └── NotFoundPage.tsx
+│   │   └── services/
 │   └── package.json
 └── README.md
 ```
@@ -219,6 +268,13 @@ Notes:
 - `POST /api/roadmap/suggest-skills`
 - `GET /api/roadmap/history`
 
+### Mentor / Career Tools
+- `POST /api/mentor/chat` — AI mentor conversation
+- `POST /api/mentor/job-match` — Job role matching
+- `POST /api/mentor/resume` — ATS resume generation
+- `POST /api/mentor/daily-plan` — 7-day study plan
+- `POST /api/mentor/skill-gap` — Skill gap analysis
+
 ## Usage Flow
 
 1. Sign up or log in.
@@ -228,12 +284,17 @@ Notes:
 5. Add hours per week and a target date.
 6. Generate the roadmap.
 7. Review:
-   - success score
-   - timeline
-   - roadmap summary
+   - success score with AI reasoning
+   - risk factors and improvement suggestions
+   - timeline and roadmap summary
    - detailed markdown plan
 8. Export, regenerate, share, print, or save as PDF.
-9. Revisit saved roadmaps from the History page.
+9. Use the AI Mentor to ask career questions and get daily tasks.
+10. Match your skills to real job roles.
+11. Build an ATS-friendly resume.
+12. Generate a 7-day study plan.
+13. Analyze your skill gaps against industry requirements.
+14. Revisit saved roadmaps from the History page.
 
 ## Build Commands
 
@@ -256,6 +317,8 @@ python app.py
 - `Download PDF` currently uses the browser print dialog, which lets users save the roadmap as a PDF.
 - AI responses depend on the configured local or remote model endpoint.
 - If you add new backend routes, restart the Flask server so preflight/API changes are picked up.
+- The AI Mentor chat is ephemeral (messages reset on page refresh).
+- Run `python migrate.py` after pulling changes to apply any new database columns.
 
 ## Contributing
 
